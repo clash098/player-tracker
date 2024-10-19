@@ -5,6 +5,63 @@ import time
 
 TrackerName = ""
 
+Cosmetics = [
+    {
+    "CosmeticName":"Stick",
+    "CosmeticId":"LBAAK." 
+    },
+    {
+    "CosmeticName":"Admin Badge",
+    "CosmeticId":"LBAAD." 
+    },
+    {
+    "CosmeticName":"Illustrator Badge",
+    "CosmeticId":"LBAGS." 
+    },
+    {
+    "CosmeticName":"Finger Painter",
+    "CosmeticId":"LBADE." 
+    },
+    {
+    "CosmeticName":"Unreleased Sweater",
+    "CosmeticId":"LBACP." 
+    },
+]
+
+Colors = [
+    { 
+    "ColorName": "Red",
+    "ColorHex": 0xff0000,
+    "Activated": True,
+    },
+    { 
+    "ColorName": "Green",
+    "ColorHex": 0x00ff00,
+    "Activated": True,
+    },
+    { 
+    "ColorName": "Blue",
+    "ColorHex": 0x0000ff,
+    "Activated": True,
+    },
+    { 
+    "ColorName": "Black",
+    "ColorHex": 0x000000,
+    "Activated": True,
+    },
+    { 
+    "ColorName": "White",
+    "ColorHex": 0xffffff,
+    "Activated": True,
+    },
+    { 
+    "ColorName": "Grey",
+    "ColorHex": 0x818181,
+    "Activated": True,
+    },
+    
+]
+
 SessionTickets = [
     "",
 ]
@@ -23,6 +80,13 @@ def Webhook(item, code, region, player_count, board_position, actor, rawconcat):
     else:
         concat = rawconcat
 
+    for ColorData in Colors:
+        if ColorData['Activated'] is True:
+            Color = ColorData['ColorHex']
+    
+    if not Color:
+        Color = 0x000000
+        
     content = f"<@&1292686258937659482>"
     embeds = [{
         "title":
@@ -30,7 +94,7 @@ def Webhook(item, code, region, player_count, board_position, actor, rawconcat):
         "description":
         "",
         "color":
-        0x0000ff,
+        Color,
         "fields": [
             {"name": "Found","value": f"```{item}```","inline": False},
             {"name": "Code","value": f"```{code}```","inline": False},
@@ -50,6 +114,13 @@ def Webhook(item, code, region, player_count, board_position, actor, rawconcat):
     response.raise_for_status()
 
 def StartWebhook():
+    for ColorData in Colors:
+        if ColorData['Activated'] is True:
+            Color = ColorData['ColorHex']
+    
+    if not Color:
+        Color = 0x000000
+        
     content = f"<@&1292686258937659482>"
     embeds = [{
         "title":
@@ -57,7 +128,7 @@ def StartWebhook():
         "description":
         "",
         "color":
-        0x0000ff,
+        Color,
         "fields": [
             {"name": "Person Running","value": f"```Pulse```","inline": False},
             {"name": "Codes","value": f"```{len(Codes)}```","inline": False},
@@ -91,23 +162,13 @@ def CheckCode():
                 for key, value in room_data.items():
                     board_position += 1
                     concat = value['Value']
-                    # Paid Items
-                    if "LBAAK." in value['Value']:
-                        print(Fore.BLUE + f"Found Stick in code: {code}")
-                        Webhook("Stick", code, region, player_count, board_position, key, concat)
                     
-                    if "LBADE." in value['Value']:
-                        Webhook("Finger Painter", code, region, player_count, board_position, key, concat)
-                        print(Fore.BLUE + f"Found Finger Painter in code: {code}")
-                    
-                    if "LBAGS." in value['Value']:
-                        Webhook("Illustrator Badge", code, region, player_count, board_position, key, concat)
-                        print(Fore.BLUE + f"Found Illustrator Badge in code: {code}")
-                    
-                    if "LBACP." in value['Value']:
-                        Webhook("Unreleased Sweater", code, region, player_count, board_position, key, concat)
-                        print(Fore.GREEN + f"Found Unreleased Sweater in code: {code}")
-
+                    for CosmeticData in Cosmetics:
+                        if CosmeticData['CosmeticId'] in value['Value']:
+                            Webhook(CosmeticData['CosmeticName'], code, region, player_count, board_position, key, concat)
+                            
+                            print(Fore.GREEN + f"Found {CosmeticData['CosmeticName']} in code: {code}")
+                        
                 print(Fore.LIGHTBLACK_EX + f"Checked Room {code}{region} with {player_count} players.")
 
             elif requestjson['code'] == 429:
