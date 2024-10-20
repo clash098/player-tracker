@@ -103,7 +103,7 @@ def Webhook(item, code, region, player_count, board_position, actor, rawconcat):
             {"name": "Leaderboard Pos","value": f"```{board_position}```","inline": False},
             {"name": "Actor Number","value": f"```{actor}```","inline": False},
             {"name": "Concat","value": f"```{concat}```","inline": False},
-        ],   "footer": {"text": "Pulse Tracker | Src By Clash | gg/lucid-tracker"
+        ],   "footer": {"text": f"{TrackerName} | Src By Clash"
         }
     }]
 
